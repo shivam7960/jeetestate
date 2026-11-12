@@ -3,7 +3,7 @@ import type { Location } from "@/types";
 /** Real Gurgaon corridors with deliberately generic descriptions. No prices or
  *  market figures. Add verified micro-market notes (distances, metro, schools)
  *  after checking official sources. */
-export const locations: Location[] = [
+const baseLocations: Location[] = [
   {
     slug: "golf-course-road",
     name: "Golf Course Road",
@@ -68,3 +68,10 @@ export const locations: Location[] = [
       "A commercial and corporate district of Gurgaon, relevant for office and pre-leased investments.",
   },
 ];
+export const locations: Location[] = baseLocations.map((l) => ({
+  ...l,
+  cover: {
+    src: `/images/locations/${l.slug}-real-estate.jpg`,
+    alt: `${l.name}, Gurgaon real estate corridor`,
+  },
+}));
