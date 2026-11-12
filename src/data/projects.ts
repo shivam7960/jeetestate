@@ -6,32 +6,41 @@ import type { MediaImage, Project } from "@/types";
  *  in two or more sources; verify all on https://haryanarera.gov.in/ before launch.
  *  Last reviewed: 9 Nov 2026. */
 
-/** Jin projects ki images /public/images/projects/<slug>/ mein save ho chuki hain,
- *  unka slug yahan add karein. File ke naam: <slug>-exterior-gurgaon.jpg,
- *  <slug>-clubhouse-gurgaon.jpg, <slug>-interior-gurgaon.jpg */
-const IMAGE_PROJECTS = [
-  "dlf-the-camellias",
-  "dlf-the-magnolias",
-  "dlf-the-aralias",
-  "dlf-the-crest",
-  "dlf-the-arbour",
-  "dlf-the-dahlias",
-];
+/** Jin projects ki images save ho chuki hain, unka slug aur uske views yahan likhein.
+ *  File ka path: /images/projects/<slug>/<slug>-<view>-gurgaon.jpg */
+const IMAGE_PROJECTS: Record<string, string[]> = {
+  // DLF
+  "dlf-the-camellias": ["exterior", "clubhouse", "interior"],
+  "dlf-the-magnolias": ["exterior", "clubhouse", "interior"],
+  "dlf-the-aralias": ["exterior", "clubhouse", "interior"],
+  "dlf-the-crest": ["exterior", "clubhouse", "interior"],
+  "dlf-the-arbour": ["exterior", "clubhouse", "interior"],
+  "dlf-the-dahlias": ["exterior", "clubhouse", "interior"],
+  // M3M
+  "m3m-golf-estate": ["exterior", "clubhouse", "interior"],
+  "m3m-merlin": ["exterior", "clubhouse", "interior"],
+  "m3m-golf-hills": ["exterior", "clubhouse", "interior"],
+  "m3m-cosmopolitan": ["exterior", "lobby", "interior"],
+  "m3m-urbana": ["exterior", "lobby", "interior"],
+  "m3m-ifc-pre-leased-offices": ["exterior", "lobby", "interior"],
+};
 
-const VIEWS = [
-  { key: "exterior", caption: "Exterior" },
-  { key: "clubhouse", caption: "Clubhouse and amenities" },
-  { key: "interior", caption: "Interior" },
-];
+const VIEW_CAPTIONS: Record<string, string> = {
+  exterior: "Exterior",
+  clubhouse: "Clubhouse and amenities",
+  lobby: "Lobby and reception",
+  interior: "Interior",
+};
 
-const gallery = (slug: string, name: string): MediaImage[] =>
-  IMAGE_PROJECTS.includes(slug)
-    ? VIEWS.map((v) => ({
-        src: `/images/projects/${slug}/${slug}-${v.key}-gurgaon.jpg`,
-        alt: `${name} ${v.caption.toLowerCase()}, Gurgaon`,
-        caption: v.caption,
-      }))
-    : [{ alt: `${name} exterior`, caption: "Exterior" }];
+const gallery = (slug: string, name: string): MediaImage[] => {
+  const views = IMAGE_PROJECTS[slug];
+  if (!views) return [{ alt: `${name} exterior`, caption: "Exterior" }];
+  return views.map((key) => ({
+    src: `/images/projects/${slug}/${slug}-${key}-gurgaon.jpg`,
+    alt: `${name} ${VIEW_CAPTIONS[key].toLowerCase()}, Gurgaon`,
+    caption: VIEW_CAPTIONS[key],
+  }));
+};
 
 type Spec = { label: string; value: string };
 
@@ -65,7 +74,7 @@ const make = (
     ...specs,
     { label: "RERA and possession", value: "To be verified" },
   ],
-  gallery: gallery(slug,name),
+  gallery: gallery(slug, name),
   ...(featured ? { featured: true } : {}),
 });
 
