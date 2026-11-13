@@ -27,6 +27,7 @@ export default function CategoryPage({ slug }: { slug: CategorySlug }) {
     <>
       <PageHeader
         seed={`category-${slug}`}
+        image={category.banner}
         title={category.headline}
         intro={category.description}
         crumbs={[{ label: "Home", href: "/" }, { label: "Projects", href: "/projects" }, { label: category.name }]}

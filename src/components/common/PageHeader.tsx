@@ -1,24 +1,27 @@
 import type { ReactNode } from "react";
 import Breadcrumbs, { type Crumb } from "./Breadcrumbs";
-import { PropertyVisual } from "./PropertyVisual";
+import { Media } from "./PropertyVisual";
+import type { MediaImage } from "@/types";
 
 export default function PageHeader({
   title,
   intro,
   crumbs,
   seed,
+  image,
   children,
 }: {
   title: string;
   intro?: string;
   crumbs: Crumb[];
   seed: string;
+  image?: MediaImage;
   children?: ReactNode;
 }) {
   return (
     <section className="relative overflow-hidden bg-ink text-white">
       <div className="absolute inset-0 opacity-40" aria-hidden="true">
-        <PropertyVisual seed={seed} label="" />
+        <Media image={image} seed={seed} sizes="100vw" priority />
       </div>
       <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/40" aria-hidden="true" />
       <div className="container-width relative py-16 sm:py-20">

@@ -11,6 +11,8 @@ export interface Category {
   name: string;
   headline: string;
   description: string;
+  card?: MediaImage;
+  banner?: MediaImage;
 }
 
 /** Image slots. `src` is optional: without it a placeholder illustration is drawn.

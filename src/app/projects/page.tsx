@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHeader from "@/components/common/PageHeader";
 import SectionHeading from "@/components/common/SectionHeading";
-import { PropertyVisual } from "@/components/common/PropertyVisual";
+import { Media } from "@/components/common/PropertyVisual";
 import CTASection from "@/components/common/CTASection";
 import ProjectFilters from "@/components/projects/ProjectFilters";
 import ProjectGrid from "@/components/projects/ProjectGrid";
@@ -34,7 +34,7 @@ export default function ProjectsPage() {
               <li key={c.slug}>
                 <Link href={`/projects/${c.slug}`} className="group block h-full border border-mist bg-white transition-shadow hover:shadow-xl">
                   <div className="relative aspect-[16/9] overflow-hidden bg-ink">
-                    <PropertyVisual seed={`category-${c.slug}`} label="" className="transition-transform duration-500 group-hover:scale-105" />
+                    <Media image={c.banner} seed={`category-${c.slug}`} sizes="(min-width: 768px) 33vw, 100vw" className="transition-transform duration-500 group-hover:scale-105" />
                   </div>
                   <div className="p-6">
                     <h3 className="font-display text-2xl text-ink">{c.name}</h3>

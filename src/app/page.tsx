@@ -9,7 +9,7 @@ import Testimonials from "@/components/home/Testimonials";
 import LatestInsights from "@/components/home/LatestInsights";
 import SectionHeading from "@/components/common/SectionHeading";
 import ServiceIcon from "@/components/common/ServiceIcon";
-import { PropertyVisual } from "@/components/common/PropertyVisual";
+import { Media, PropertyVisual } from "@/components/common/PropertyVisual";
 import EnquiryForm from "@/components/projects/EnquiryForm";
 import { CATEGORIES, SERVICES } from "@/data/site";
 import { projectsByCategory } from "@/lib/data";
@@ -35,7 +35,7 @@ export default function Home() {
             {CATEGORIES.map((c) => (
               <li key={c.slug}>
                 <Link href={`/projects/${c.slug}`} className="group relative block aspect-[4/5] overflow-hidden bg-ink text-white">
-                  <PropertyVisual seed={`category-${c.slug}`} label="" className="transition-transform duration-500 group-hover:scale-105" />
+                  <Media image={c.card} seed={`category-${c.slug}`} sizes="(min-width: 768px) 33vw, 100vw" className="transition-transform duration-500 group-hover:scale-105" />
                   <span className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" aria-hidden="true" />
                   <span className="absolute inset-x-0 bottom-0 p-7">
                     <span className="font-display block text-3xl">{c.name}</span>

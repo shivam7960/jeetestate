@@ -15,7 +15,7 @@ export const SITE = {
   contactIsPlaceholder: !process.env.NEXT_PUBLIC_WHATSAPP_NUMBER,
 } as const;
 
-export const CATEGORIES: Category[] = [
+const baseCategories: Category[] = [
   {
     slug: "residential",
     name: "Residential",
@@ -38,6 +38,17 @@ export const CATEGORIES: Category[] = [
       "Leased office units with tenants in place. Lease terms and rent vary by unit, so we help you verify them before you decide.",
   },
 ];
+export const CATEGORIES: Category[] = baseCategories.map((c) => ({
+  ...c,
+  card: {
+    src: `/images/categories/${c.slug}-properties-gurgaon-card.jpg`,
+    alt: `${c.name} properties in Gurgaon`,
+  },
+  banner: {
+    src: `/images/categories/${c.slug}-properties-gurgaon-banner.jpg`,
+    alt: `${c.name} properties in Gurgaon`,
+  },
+}));
 
 export const NAV_ITEMS = [
   { name: "Home", href: "/" },
