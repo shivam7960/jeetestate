@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import BuilderLogo from "@/components/common/BuilderLogo";
 import CTASection from "@/components/common/CTASection";
 import SectionHeading from "@/components/common/SectionHeading";
 import EnquiryForm from "@/components/projects/EnquiryForm";
+import AmenityCards from "@/components/projects/AmenityCards";
 import ProjectGallery from "@/components/projects/ProjectGallery";
+import ProjectTabs from "@/components/projects/ProjectTabs";
 import ProjectGrid from "@/components/projects/ProjectGrid";
 import { SITE } from "@/data/site";
 import { getBuilder, getCategory, getLocation, getProject, projects, projectsByBuilder } from "@/lib/data";
@@ -36,6 +38,16 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
   const location = getLocation(project.locationSlug);
   const category = getCategory(project.category)!;
   const more = projectsByBuilder(builder.slug).filter((p) => p.slug !== project.slug);
+  const hasAmenities = project.amenities.length > 0;
+  const hasPlans = !!project.floorPlans && project.floorPlans.length > 0;
+  const tabs = [
+    { id: "tab-overview", label: "Overview" },
+    { id: "tab-configuration", label: "Configuration" },
+    ...(hasAmenities ? [{ id: "tab-amenities", label: "Amenities" }] : []),
+    { id: "tab-specs", label: "Specifications" },
+    ...(hasPlans ? [{ id: "tab-plans", label: "Floor plans" }] : []),
+    { id: "tab-builder", label: "Developer" },
+  ];
 
   return (
     <>
@@ -76,7 +88,9 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
 
           <ProjectGallery images={project.gallery} seed={project.slug} />
 
-          <section aria-labelledby="overview">
+          <ProjectTabs tabs={tabs} />
+
+          <section id="tab-overview" aria-labelledby="overview" className="scroll-mt-36">
             <h2 id="overview" className="font-display text-2xl text-ink">Overview</h2>
             <p className="mt-4 max-w-3xl leading-relaxed text-charcoal">{project.overview}</p>
             <dl className="mt-6 grid max-w-xl grid-cols-2 gap-y-3 text-sm">
@@ -88,23 +102,21 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
             </dl>
           </section>
 
-          <section aria-labelledby="configuration">
+          <section id="tab-configuration" aria-labelledby="configuration" className="scroll-mt-36">
             <h2 id="configuration" className="font-display text-2xl text-ink">Configuration</h2>
             <ul className="mt-4 flex flex-wrap gap-3">
               {project.configuration.map((c) => (<li key={c} className="border border-mist px-4 py-2 text-charcoal">{c}</li>))}
             </ul>
           </section>
 
-          <section aria-labelledby="amenities">
+          {hasAmenities && (
+          <section id="tab-amenities" aria-labelledby="amenities" className="scroll-mt-36">
             <h2 id="amenities" className="font-display text-2xl text-ink">Amenities</h2>
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-              {project.amenities.map((a) => (
-                <li key={a} className="flex items-center gap-3 text-charcoal"><Check size={18} className="text-gold-deep" aria-hidden="true" />{a}</li>
-              ))}
-            </ul>
+            <AmenityCards items={project.amenities} />
           </section>
+          )}
 
-          <section aria-labelledby="specs">
+          <section id="tab-specs" aria-labelledby="specs" className="scroll-mt-36">
             <h2 id="specs" className="font-display text-2xl text-ink">Specifications</h2>
             <dl className="mt-4 divide-y divide-mist border-y border-mist">
               {project.specifications.map((s) => (
@@ -116,7 +128,7 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
           </section>
 
           {project.floorPlans && project.floorPlans.length > 0 && (
-            <section aria-labelledby="plans">
+            <section id="tab-plans" aria-labelledby="plans" className="scroll-mt-36">
               <h2 id="plans" className="font-display text-2xl text-ink">Floor plans</h2>
               <ul className="mt-4 grid gap-4 sm:grid-cols-2">
                 {project.floorPlans.map((f) => (
@@ -131,7 +143,7 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
             </section>
           )}
 
-          <section aria-labelledby="builder" className="border border-mist bg-ivory p-6">
+          <section id="tab-builder" aria-labelledby="builder" className="scroll-mt-36 border border-mist bg-ivory p-6">
             <h2 id="builder" className="sr-only">About the builder</h2>
             <div className="flex items-center gap-4">
               <BuilderLogo name={builder.name} />

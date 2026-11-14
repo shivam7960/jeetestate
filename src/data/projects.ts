@@ -1,4 +1,5 @@
 import type { MediaImage, Project } from "@/types";
+import { amenitiesFor } from "./amenities";
 
 /** Real Gurgaon projects. Sector, status and configuration are cross-checked from
  *  builder websites and multiple listings. Prices are NOT shown ("Price on request")
@@ -23,6 +24,13 @@ const IMAGE_PROJECTS: Record<string, string[]> = {
   "m3m-cosmopolitan": ["exterior", "lobby", "interior"],
   "m3m-urbana": ["exterior", "lobby", "interior"],
   "m3m-ifc-pre-leased-offices": ["exterior", "lobby", "interior"],
+    // Emaar
+  "emaar-digital-greens": ["exterior", "lobby", "interior"],
+  "emaar-capital-towers": ["exterior", "lobby", "interior"],
+  "emaar-digital-greens-pre-leased-offices": ["exterior", "lobby", "interior"],
+  "emaar-gurgaon-greens": ["exterior", "clubhouse", "interior"],
+  "emaar-emerald-hills": ["exterior", "clubhouse", "interior"],
+  "emaar-marbella": ["exterior", "clubhouse", "interior"],
 };
 
 const VIEW_CAPTIONS: Record<string, string> = {
@@ -68,7 +76,7 @@ const make = (
   priceLabel: "Price on request",
   configuration,
   overview,
-  amenities: [],
+  amenities: amenitiesFor(slug, category, propertyType),
   specifications: [
     { label: "Sector / location", value: sector },
     ...specs,
