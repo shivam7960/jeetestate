@@ -4,6 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/common/WhatsAppButton";
 import { SITE } from "@/data/site";
+import EnquiryPopupHost from "@/components/enquiry/EnquiryPopupHost";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main id="main" className="flex-1">{children}</main>
         <Footer />
         <WhatsAppButton />
+        <EnquiryPopupHost />
       </body>
     </html>
   );

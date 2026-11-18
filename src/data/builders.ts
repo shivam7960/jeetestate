@@ -20,7 +20,7 @@ export const builders: Builder[] = [
     slug: "m3m",
     name: "M3M India",
     logo: "/images/logos/m3m-logo.png",
-     cover: { src: "/images/builders/m3m-cover.png", alt: "M3M Franck Muller" },
+     cover: { src: "/images/builders/m3m-cover.jpg", alt: "M3M India projects, Gurgaon" },
     tagline: "Gurugram-based developer of residential, commercial and retail",
     description:
       "Established in 2010 and headquartered in Gurugram, M3M develops luxury residences, offices and retail across Gurgaon.",
@@ -32,7 +32,7 @@ export const builders: Builder[] = [
     slug: "emaar",
     name: "Emaar India",
     logo: "/images/logos/emaar-logo-v1.png",
-    cover: { src: "/images/builders/Emmar-Capital-Tower-Banner.png", alt: "Emaar India" },
+    cover: { src: "/images/builders/emaar-cover.jpg", alt: "Emaar India projects, Gurgaon" },
     tagline: "India arm of Dubai-based Emaar Properties",
     description:
       "Present in Gurgaon since 2005, Emaar India delivers integrated townships, premium apartments, villas and commercial developments.",
@@ -44,7 +44,7 @@ export const builders: Builder[] = [
     slug: "godrej-properties",
     name: "Godrej Properties",
     logo: "/images/logos/godrej-properties-logo.png",
-    cover: { src: "/images/builders/godrej-cover.png", alt: "Godrej Properties" },
+    cover: { src: "/images/builders/godrej-cover.jpg", alt: "Godrej Properties" },
     tagline: "Real estate arm of the Godrej Group",
     description:
       "Established in 1990 and part of the Godrej Group, Godrej Properties has a strong presence in Gurgaon with premium residential communities.",
@@ -56,7 +56,7 @@ export const builders: Builder[] = [
     slug: "signature-global",
     name: "Signature Global",
     logo: "/images/logos/signature-global-logo.png",
-    cover: { src: "/images/builders/signature-global-cover.png", alt: "Signature Global" },
+    cover: { src: "/images/builders/signature-global-cover.jpg", alt: "Signature Global" },
     tagline: "Gurugram-based developer focused on housing",
     description:
       "Established in 2014, Signature Global is known for affordable and mid-segment housing as well as new premium launches in Gurgaon.",
@@ -68,7 +68,7 @@ export const builders: Builder[] = [
     slug: "sobha",
     name: "Sobha Limited",
     logo: "/images/logos/sobha-logo.png",
-    cover: { src: "/images/builders/sobha-limited-cover.png", alt: "Sobha Limited" },
+    cover: { src: "/images/builders/sobha-limited-cover.jpg", alt: "Sobha Limited" },
     tagline: "Backward-integrated luxury developer",
     description:
       "Founded in 1995 in Bengaluru, Sobha is known for in-house quality control and has several large residential communities in Gurgaon.",
@@ -80,7 +80,7 @@ export const builders: Builder[] = [
     slug: "central-park",
     name: "Central Park",
     logo: "/images/logos/central-park-logo.png",
-    cover: { src: "/images/builders/central-park-cover.png", alt: "Central Park" },
+    cover: { src: "/images/builders/central-park-cover.jpg", alt: "Central Park" },
     tagline: "Resort-style residential communities",
     description:
       "Gurgaon-based developer known for resort-themed residential projects, primarily around Sohna Road.",
@@ -92,7 +92,7 @@ export const builders: Builder[] = [
     slug: "birla-estates",
     name: "Birla Estates",
     logo: "/images/logos/birla-estates-logo.png",
-    cover: { src: "/images/builders/birla-estates-cover.png", alt: "Birla Estates" },
+    cover: { src: "/images/builders/birla-estates-cover.jpg", alt: "Birla Estates" },
     tagline: "Real estate arm of the Aditya Birla Group",
     description:
       "The real estate company of the Aditya Birla Group, developing premium residential projects in Gurgaon.",
@@ -104,7 +104,7 @@ export const builders: Builder[] = [
     slug: "experion",
     name: "Experion Developers",
     logo: "/images/logos/experion-logo.png",
-    cover: { src: "/images/builders/experion-cover.png", alt: "Experion Developers" },
+    cover: { src: "/images/builders/experion-cover.jpg", alt: "Experion Developers" },
     tagline: "Gurugram-based luxury and premium developer",
     description:
       "A Gurugram-based developer known for premium residential projects, mostly along Dwarka Expressway and Sohna Road.",
@@ -116,7 +116,7 @@ export const builders: Builder[] = [
     slug: "ats-infrastructure",
     name: "ATS Infrastructure",
     logo: "/images/logos/ats-infrastructure-logo.png",
-    cover: { src: "/images/builders/ats-infrastructure-cover.png", alt: "ATS Infrastructure" },
+    cover: { src: "/images/builders/ats-infrastructure-cover.jpg", alt: "ATS Infrastructure" },
     tagline: "Noida-based developer with Gurgaon projects",
     description:
       "ATS is best known for its Noida communities and has delivered and launched residential projects in Gurgaon as well.",
@@ -128,7 +128,7 @@ export const builders: Builder[] = [
     slug: "smartworld",
     name: "Smartworld Developers",
     logo: "/images/logos/smartworld-logo-v1.png",
-    cover: { src: "/images/builders/smartworld-cover.png", alt: "Smartworld Developers" },
+    cover: { src: "/images/builders/smartworld-cover.jpg", alt: "Smartworld Developers" },
     tagline: "Gurugram-based developer on Dwarka Expressway",
     description:
       "A Gurugram-based developer with large residential and commercial projects, including the Trump Residences Gurgaon.",

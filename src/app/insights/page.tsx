@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function InsightsPage() {
   return (
     <>
-      <PageHeader seed="insights-index" title="Insights" intro="Plain-language guides for buyers and investors. Sample articles for demonstration." crumbs={[{ label: "Home", href: "/" }, { label: "Insights" }]} />
+      <PageHeader seed="insights-index" title="Insights" intro="Plain-language guides for buyers and investors." crumbs={[{ label: "Home", href: "/" }, { label: "Insights" }]} />
       <section className="section-padding bg-ivory">
         <div className="container-width">
           <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

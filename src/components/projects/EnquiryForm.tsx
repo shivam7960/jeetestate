@@ -1,17 +1,25 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
-import { CheckCircle2, Mail, MessageCircle, AlertCircle } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { AlertCircle, ArrowRight, CheckCircle2, Loader2, Lock, MessageCircle, Phone } from "lucide-react";
+import type { CountryCode } from "libphonenumber-js/min";
+import PhoneField from "@/components/enquiry/PhoneField";
 import { projects } from "@/data/projects";
 import { SITE } from "@/data/site";
-import { mailtoHref, whatsappHref } from "@/lib/contact";
-import { submitEnquiry, validateEnquiry, type EnquiryErrors } from "@/lib/enquiries";
-import type { EnquiryInput } from "@/types";
+import { telHref, whatsappHref } from "@/lib/contact";
+import { readAttribution, snoozePopup } from "@/lib/attribution";
+import { validateLeadFields, type Interest, type LeadErrors } from "@/lib/lead";
+import { COUNTRIES } from "@/lib/phone";
 
-type Status = "idle" | "submitting" | "ready" | "error";
+type Status = "idle" | "sending" | "done" | "failed";
 
-const EMPTY: EnquiryInput = { name: "", phone: "", email: "", project: "", message: "" };
+function interestFor(projectName: string): Interest {
+  const p = projects.find((x) => x.name === projectName);
+  if (!p) return "Not sure";
+  return p.category === "pre-rented" ? "Pre-rented" : p.category === "commercial" ? "Commercial" : "Residential";
+}
 
+/** Sidebar / section enquiry form. Sends the lead to /api/lead, the same place the popup does. */
 export default function EnquiryForm({
   defaultProject = "",
   title = "Enquire about this property",
@@ -23,125 +31,165 @@ export default function EnquiryForm({
 }) {
   const uid = useId();
   const formRef = useRef<HTMLFormElement>(null);
-  const [values, setValues] = useState<EnquiryInput>({ ...EMPTY, project: defaultProject });
-  const [errors, setErrors] = useState<EnquiryErrors>({});
+  const mountedAt = useRef(0);
+  const [name, setName] = useState("");
+  const [country, setCountry] = useState<CountryCode>("IN");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [errors, setErrors] = useState<LeadErrors>({});
   const [status, setStatus] = useState<Status>("idle");
-  const [prepared, setPrepared] = useState("");
 
-  const set = (key: keyof EnquiryInput) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setValues((v) => ({ ...v, [key]: e.target.value }));
-    if (errors[key]) setErrors((er) => ({ ...er, [key]: undefined }));
-  };
+  useEffect(() => {
+    mountedAt.current = Date.now();
+  }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const found = validateEnquiry(values);
+    const found = validateLeadFields({ name, phone, country });
     setErrors(found);
-    if (Object.keys(found).length > 0) {
-      const first = Object.keys(found)[0];
+    const first = Object.keys(found)[0];
+    if (first) {
       formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
       return;
     }
-    setStatus("submitting");
+    setStatus("sending");
     try {
-      const result = await submitEnquiry(values);
-      setPrepared(result.text);
-      setStatus("ready");
+      const res = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          phone,
+          country,
+          message: message.trim() || undefined,
+          interest: interestFor(defaultProject),
+          project: defaultProject || undefined,
+          page: window.location.pathname,
+          referrer: document.referrer || undefined,
+          utm: readAttribution(),
+          elapsedMs: Date.now() - mountedAt.current,
+          company_website: honeypot,
+        }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      snoozePopup(30 * 24 * 60 * 60 * 1000); // they already enquired, so no popup for 30 days
+      setStatus("done");
     } catch {
-      setStatus("error");
+      setStatus("failed");
     }
   }
 
   const dark = tone === "dark";
+  const dial = COUNTRIES.find((c) => c.code === country)?.dial ?? "91";
+  const firstName = name.trim().split(/\s+/)[0] ?? "";
+  const waMessage = `Hello, I’m ${name.trim() || "interested"}.${defaultProject ? ` I would like details for ${defaultProject}.` : ""} Please call me on +${dial} ${phone}.`;
   const box = dark ? "bg-white/5 text-white border border-white/15" : "bg-white text-ink border border-mist";
-  const label = `mb-1.5 block text-sm font-medium ${dark ? "text-white/90" : "text-charcoal"}`;
-  const errorText = "mt-1.5 flex items-center gap-1.5 text-sm text-[#b42318]";
+  const label = `mb-1.5 block text-[13px] font-medium tracking-wide ${dark ? "text-white/90" : "text-charcoal"}`;
+  const errorText = `mt-1.5 flex items-center gap-1.5 text-[13px] ${dark ? "text-[#fda29b]" : "text-[#b42318]"}`;
+  const soft = dark ? "text-white/75" : "text-slate";
 
-  if (status === "ready") {
+  if (status === "done") {
     return (
       <div className={`p-6 sm:p-8 ${box}`} role="status">
-        <CheckCircle2 className="text-gold" size={32} aria-hidden="true" />
-        <h3 className="font-display mt-3 text-2xl">Your enquiry is ready to send</h3>
-        <p className={`mt-3 text-sm leading-relaxed ${dark ? "text-white/80" : "text-slate"}`}>
-          This website is not connected to a database yet, so your details have{" "}
-          <strong>not been sent or saved</strong>. Send them to our team with one tap below.
+        <CheckCircle2 className="text-gold" size={40} aria-hidden="true" />
+        <h3 className="font-display mt-3 text-2xl">Thank you{firstName ? `, ${firstName}` : ""}!</h3>
+        <p className={`mt-2 text-sm leading-relaxed ${soft}`}>
+          We have your details and will call you on +{dial} {phone} shortly.
         </p>
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-          <a href={whatsappHref(prepared)} target="_blank" rel="noopener noreferrer" className="btn btn-gold">
-            <MessageCircle size={16} aria-hidden="true" /> Send on WhatsApp
-          </a>
-          <a href={mailtoHref(`Enquiry: ${values.project || "General"}`, prepared)} className={`btn ${dark ? "btn-outline" : "btn-outline-dark"}`}>
-            <Mail size={16} aria-hidden="true" /> Send by email
-          </a>
-        </div>
-        <button
-          type="button"
-          onClick={() => { setStatus("idle"); setValues({ ...EMPTY, project: defaultProject }); }}
-          className="mt-5 text-sm underline underline-offset-4"
-        >
-          Start a new enquiry
-        </button>
+        <a href={whatsappHref(waMessage)} target="_blank" rel="noopener noreferrer" className="btn btn-gold mt-5 w-full">
+          <MessageCircle size={16} aria-hidden="true" /> Chat on WhatsApp now
+        </a>
       </div>
     );
   }
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} noValidate className={`p-6 sm:p-8 ${box}`} aria-labelledby={`${uid}-title`}>
-      <h3 id={`${uid}-title`} className="font-display text-2xl">{title}</h3>
-      <p className={`mt-1 text-sm ${dark ? "text-white/70" : "text-slate"}`}>
-        All fields except the project are required. Contact details: {SITE.phoneDisplay}.
-      </p>
+    <form ref={formRef} onSubmit={onSubmit} noValidate className={`relative p-6 sm:p-8 ${box}`} aria-labelledby={`${uid}-title`}>
+      <h2 id={`${uid}-title`} className="font-display text-2xl">{title}</h2>
+      <p className={`mt-1.5 text-sm ${soft}`}>Leave your number and our advisor will call you.</p>
 
-      {status === "error" && (
-        <p role="alert" className="mt-4 flex items-start gap-2 border border-[#b42318] bg-[#fef3f2] p-3 text-sm text-[#b42318]">
-          <AlertCircle size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
-          Something went wrong while preparing your enquiry. Please try again, or call or WhatsApp us directly.
-        </p>
+      {status === "failed" && (
+        <div role="alert" className="mt-4 border border-[#b42318] bg-[#fef3f2] p-3 text-sm text-[#b42318]">
+          <p className="flex items-start gap-2">
+            <AlertCircle size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
+            We could not send your details just now. Please try again, or reach us directly:
+          </p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <a href={whatsappHref(waMessage)} target="_blank" rel="noopener noreferrer" className="btn btn-gold !py-2 !text-sm">
+              <MessageCircle size={15} aria-hidden="true" /> WhatsApp
+            </a>
+            <a href={telHref} className="btn btn-outline-dark !py-2 !text-sm">
+              <Phone size={15} aria-hidden="true" /> {SITE.phoneDisplay}
+            </a>
+          </div>
+        </div>
       )}
 
-      <div className="mt-5 space-y-4">
-        {([
-          ["name", "Full name", "text", "name"],
-          ["phone", "Phone number", "tel", "tel"],
-          ["email", "Email address", "email", "email"],
-        ] as const).map(([key, text, type, ac]) => (
-          <div key={key}>
-            <label htmlFor={`${uid}-${key}`} className={label}>{text}</label>
-            <input
-              id={`${uid}-${key}`} name={key} type={type} autoComplete={ac}
-              value={values[key]} onChange={set(key)}
-              aria-invalid={Boolean(errors[key])}
-              aria-describedby={errors[key] ? `${uid}-${key}-err` : undefined}
-              className="field"
-            />
-            {errors[key] && <p id={`${uid}-${key}-err`} className={errorText}><AlertCircle size={14} aria-hidden="true" />{errors[key]}</p>}
-          </div>
-        ))}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+        <label>
+          Company website
+          <input type="text" name="company_website" tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
+        </label>
+      </div>
 
+      <div className="mt-5 space-y-4">
         <div>
-          <label htmlFor={`${uid}-project`} className={label}>Interested project (optional)</label>
-          <select id={`${uid}-project`} name="project" value={values.project} onChange={set("project")} className="field">
-            <option value="">General enquiry</option>
-            {projects.map((p) => (<option key={p.slug} value={p.name}>{p.name}</option>))}
-          </select>
+          <label htmlFor={`${uid}-name`} className={label}>Full name <span className="text-[#f04438]">*</span></label>
+          <input
+            id={`${uid}-name`}
+            name="name"
+            type="text"
+            autoComplete="name"
+            value={name}
+            onChange={(e) => { setName(e.target.value); if (errors.name) setErrors((x) => ({ ...x, name: undefined })); }}
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={errors.name ? `${uid}-name-err` : undefined}
+            className="field text-base !text-ink"
+          />
+          {errors.name && <p id={`${uid}-name-err`} className={errorText}><AlertCircle size={14} aria-hidden="true" />{errors.name}</p>}
         </div>
 
         <div>
-          <label htmlFor={`${uid}-message`} className={label}>Message</label>
-          <textarea
-            id={`${uid}-message`} name="message" rows={4}
-            value={values.message} onChange={set("message")}
-            aria-invalid={Boolean(errors.message)}
-            aria-describedby={errors.message ? `${uid}-message-err` : undefined}
-            className="field"
+          <label htmlFor={`${uid}-phone`} className={label}>Mobile number <span className="text-[#f04438]">*</span></label>
+          <PhoneField
+            id={`${uid}-phone`}
+            country={country}
+            onCountryChange={setCountry}
+            value={phone}
+            onValueChange={(v) => { setPhone(v); if (errors.phone) setErrors((x) => ({ ...x, phone: undefined })); }}
+            invalid={Boolean(errors.phone)}
+            describedBy={errors.phone ? `${uid}-phone-err` : undefined}
           />
-          {errors.message && <p id={`${uid}-message-err`} className={errorText}><AlertCircle size={14} aria-hidden="true" />{errors.message}</p>}
+          {errors.phone && <p id={`${uid}-phone-err`} className={errorText}><AlertCircle size={14} aria-hidden="true" />{errors.phone}</p>}
+        </div>
+
+        <div>
+          <label htmlFor={`${uid}-message`} className={label}>Message <span className={`font-normal ${soft}`}>(optional)</span></label>
+          <textarea
+            id={`${uid}-message`}
+            name="message"
+            rows={3}
+            maxLength={500}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Budget, preferred location, anything you want us to know"
+            className="field resize-y text-base !text-ink"
+          />
         </div>
       </div>
 
-      <button type="submit" disabled={status === "submitting"} className="btn btn-gold mt-6 w-full disabled:opacity-60">
-        {status === "submitting" ? "Preparing..." : "Prepare my enquiry"}
+      <button type="submit" disabled={status === "sending"} className="btn btn-gold group mt-6 w-full !min-h-14 text-[15px] disabled:opacity-70">
+        {status === "sending" ? (
+          <><Loader2 size={18} className="animate-spin" aria-hidden="true" /> Sending...</>
+        ) : (
+          <>Request a call back <ArrowRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" /></>
+        )}
       </button>
+      <p className={`mt-3 flex items-start gap-2 text-xs leading-relaxed ${soft}`}>
+        <Lock size={13} className="mt-0.5 shrink-0 text-gold" aria-hidden="true" />
+        <span>Your details stay private. By submitting, you agree that {SITE.name} may contact you about your enquiry.</span>
+      </p>
     </form>
   );
 }

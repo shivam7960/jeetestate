@@ -39,7 +39,7 @@ export default function Home() {
                   <span className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" aria-hidden="true" />
                   <span className="absolute inset-x-0 bottom-0 p-7">
                     <span className="font-display block text-3xl">{c.name}</span>
-                    <span className="mt-1 block text-sm text-white/80">{projectsByCategory(c.slug).length} sample projects</span>
+                    <span className="mt-1 block text-sm text-white/80">{projectsByCategory(c.slug).length} projects</span>
                   </span>
                 </Link>
               </li>

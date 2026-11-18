@@ -8,7 +8,7 @@ export default function FeaturedBuilders() {
     <section className="section-padding bg-ivory">
       <div className="container-width">
         <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-          <SectionHeading title="Builders" intro="Every builder page lists all of their projects in one place. Sample builders shown." />
+          <SectionHeading title="Builders" intro="Every builder page lists all of their projects in one place." />
           <Link href="/builders" className="btn btn-outline-dark self-start sm:self-auto">All builders</Link>
         </div>
         <ul className="mt-12 grid gap-7 md:grid-cols-2 lg:grid-cols-3">

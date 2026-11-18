@@ -37,7 +37,9 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
-a { color: inherit; text-decoration: none; }
+@layer base {
+  a { color: inherit; text-decoration: none; }
+}
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
 ::selection { background: var(--gold); color: #fff; }
@@ -62,8 +64,8 @@ button { cursor: pointer; }
 }
 .btn-gold { background: var(--gold); color: #1a1408; }
 .btn-gold:hover { background: #c4a165; }
-/* .btn-ink { background: var(--ink); color: #fff; } */
-/* .btn-ink:hover { background: var(--navy); } */
+.btn-ink { background: var(--ink); color: #fff; }
+.btn-ink:hover { background: var(--navy); }
 .btn-outline { border-color: currentColor; background: transparent; }
 .btn-outline:hover { background: rgba(255,255,255,.1); }
 .btn-outline-dark { border-color: var(--ink); color: var(--ink); background: transparent; }

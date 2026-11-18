@@ -6,6 +6,9 @@ import CTASection from "@/components/common/CTASection";
 import { getInsight, insights } from "@/lib/data";
 import { formatDate } from "@/lib/utils";
 
+// Pages are pre-built from generateStaticParams; allow a blocking route so Next's instant-navigation check doesn't error.
+export const instant = false;
+
 export function generateStaticParams() {
   return insights.map((i) => ({ slug: i.slug }));
 }
@@ -28,7 +31,7 @@ export default async function InsightPage(props: PageProps<"/insights/[slug]">) 
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Insights", href: "/insights" }, { label: insight.title }]} />
         <p className="mt-8 text-sm text-gold-deep">{insight.category}</p>
         <h1 className="font-display mt-2 text-4xl leading-tight text-ink sm:text-5xl">{insight.title}</h1>
-        <p className="mt-4 text-sm text-slate">{formatDate(insight.date)} · {insight.readMinutes} min read · Sample article</p>
+        <p className="mt-4 text-sm text-slate">{formatDate(insight.date)} · {insight.readMinutes} min read</p>
         <div className="mt-10 space-y-6 text-lg leading-[1.8] text-charcoal">
           {insight.body.map((para) => (<p key={para.slice(0, 24)}>{para}</p>))}
         </div>

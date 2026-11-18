@@ -9,7 +9,7 @@ export default function FeaturedProjects() {
     <section className="section-padding bg-white">
       <div className="container-width">
         <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-          <SectionHeading title="Featured projects" intro="A selection across residential, commercial and pre-rented. Sample listings for demonstration." />
+          <SectionHeading title="Featured projects" intro="A selection across residential, commercial and pre-rented." />
           <Link href="/projects#all-projects" className="btn btn-outline-dark self-start sm:self-auto">Browse all projects</Link>
         </div>
         <div className="mt-12"><ProjectGrid projects={featured} /></div>
