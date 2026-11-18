@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { SearchX } from "lucide-react";
 import { CATEGORIES } from "@/data/site";
-import { BUDGETS, PROPERTY_TYPES, STATUSES, matchesBudget } from "@/lib/data";
+import { BUDGETS, HAS_PRICES, PROPERTY_TYPES, STATUSES, matchesBudget } from "@/lib/data";
 import type { Builder, CategorySlug, Location, Project } from "@/types";
 import ProjectGrid from "./ProjectGrid";
 
@@ -41,7 +41,7 @@ export default function ProjectFilters({
   const get = (key: string) => params.get(key) ?? "";
   const category = lockedCategory ?? get("category");
   const location = get("location");
-  const budget = get("budget");
+  const budget = HAS_PRICES ? get("budget") : "";
   const type = get("type");
   const builder = get("builder");
   const status = get("status");
@@ -82,12 +82,12 @@ export default function ProjectFilters({
           <label htmlFor="f-q" className="mb-1.5 block text-sm font-medium text-charcoal">Search by project, builder or location</label>
           <input id="f-q" type="search" value={q} onChange={(e) => update("q", e.target.value)} placeholder="For example: Golf Course Road" className="field" />
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${HAS_PRICES ? "xl:grid-cols-6" : "xl:grid-cols-5"}`}>
           {!lockedCategory && (
             <FilterSelect onChange={update} id="category" label="Category" value={category} options={CATEGORIES.map((c) => ({ value: c.slug, label: c.name }))} />
           )}
           <FilterSelect onChange={update} id="location" label="Location" value={location} options={locations.map((l) => ({ value: l.slug, label: l.name }))} />
-          <FilterSelect onChange={update} id="budget" label="Budget" value={budget} options={BUDGETS.map((b) => ({ value: b.value, label: b.label }))} />
+          {HAS_PRICES && <FilterSelect onChange={update} id="budget" label="Budget" value={budget} options={BUDGETS.map((b) => ({ value: b.value, label: b.label }))} />}
           <FilterSelect onChange={update} id="type" label="Property type" value={type} options={PROPERTY_TYPES.map((t) => ({ value: t, label: t }))} />
           <FilterSelect onChange={update} id="builder" label="Builder" value={builder} options={builders.map((b) => ({ value: b.slug, label: b.name }))} />
           <FilterSelect onChange={update} id="status" label="Status" value={status} options={STATUSES.map((s) => ({ value: s, label: s }))} />

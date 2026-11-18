@@ -14,6 +14,11 @@ export const BUDGETS = [
   { value: "above-10", label: "Above ₹10 Cr", min: 10, max: Infinity },
 ] as const;
 
+/** The budget filter only works once projects have prices. While none do, it is hidden. */
+export const HAS_PRICES = projects.some(
+  (p) => p.priceMinCr !== undefined && p.priceMaxCr !== undefined,
+);
+
 export const STATUSES = [
   "New Launch",
   "Under Construction",

@@ -7,9 +7,10 @@ import { Pause, Play } from "lucide-react";
 import { PropertyVisual } from "@/components/common/PropertyVisual";
 
 /** Video-ready hero.
- *  Place your licensed MP4 at /public/videos/hero-drone.mp4.
+ *  Videos live in /public/videos: hero-drone.mp4 (1080p) and hero-drone-mobile.mp4 (720p).
  *  Layers (bottom to top): illustrated fallback, poster image, video, dark overlay. */
-const VIDEO_SRC = "/videos/hero-drone.mp4";
+const VIDEO_SRC = "/videos/hero-drone.mp4"; // 1080p, desktop
+const VIDEO_SRC_MOBILE = "/videos/hero-drone-mobile.mp4"; // 720p, phones
 const POSTER_SRC = "/images/hero-poster.jpg";
 
 export default function Hero() {
@@ -26,12 +27,13 @@ export default function Hero() {
 
     // The error event can fire before React hydrates, so also check the state on mount.
     const fail = () => setFailed(true);
-    v.addEventListener("error", fail);
+    // Errors from <source> children do not bubble, so listen in the capture phase.
+    v.addEventListener("error", fail, true);
     const timer = window.setTimeout(() => {
       if (v.error || v.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) fail();
-    }, 0);
+    }, 1500);
     return () => {
-      v.removeEventListener("error", fail);
+      v.removeEventListener("error", fail, true);
       window.clearTimeout(timer);
     };
   }, []);
@@ -53,7 +55,6 @@ export default function Hero() {
         <video
           ref={videoRef}
           className="absolute inset-0 -z-10 h-full w-full object-cover"
-          src={VIDEO_SRC}
           poster={POSTER_SRC}
           autoPlay
           muted
@@ -63,7 +64,10 @@ export default function Hero() {
           aria-hidden="true"
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
-        />
+        >
+          <source src={VIDEO_SRC_MOBILE} type="video/mp4" media="(max-width: 767px)" />
+          <source src={VIDEO_SRC} type="video/mp4" />
+        </video>
       )}
       <div className="absolute inset-0 -z-[5] bg-gradient-to-t from-ink via-ink/55 to-ink/35" aria-hidden="true" />
       <div className="absolute inset-0 -z-[5] bg-gradient-to-r from-ink/70 to-transparent" aria-hidden="true" />

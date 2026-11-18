@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 import { CATEGORIES } from "@/data/site";
-import { BUDGETS, PROPERTY_TYPES, locations } from "@/lib/data";
+import { BUDGETS, HAS_PRICES, PROPERTY_TYPES, locations } from "@/lib/data";
 
 /** Plain GET form: works without JavaScript and deep-links into /projects filters. */
 export default function PropertySearch() {
@@ -9,7 +9,7 @@ export default function PropertySearch() {
   return (
     <section aria-label="Property search" className="container-width relative z-10 -mt-16 sm:-mt-20">
       <form action="/projects" method="get" className="border border-mist bg-white p-5 shadow-2xl sm:p-7">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className={`grid gap-4 sm:grid-cols-2 ${HAS_PRICES ? "lg:grid-cols-5" : "lg:grid-cols-4"}`}>
           <div>
             <label htmlFor="s-category" className={label}>Category</label>
             <select id="s-category" name="category" className={select} defaultValue="">
@@ -24,13 +24,15 @@ export default function PropertySearch() {
               {locations.map((l) => (<option key={l.slug} value={l.slug}>{l.name}</option>))}
             </select>
           </div>
-          <div>
-            <label htmlFor="s-budget" className={label}>Budget</label>
-            <select id="s-budget" name="budget" className={select} defaultValue="">
-              <option value="">Any budget</option>
-              {BUDGETS.map((b) => (<option key={b.value} value={b.value}>{b.label}</option>))}
-            </select>
-          </div>
+          {HAS_PRICES && (
+            <div>
+              <label htmlFor="s-budget" className={label}>Budget</label>
+              <select id="s-budget" name="budget" className={select} defaultValue="">
+                <option value="">Any budget</option>
+                {BUDGETS.map((b) => (<option key={b.value} value={b.value}>{b.label}</option>))}
+              </select>
+            </div>
+          )}
           <div>
             <label htmlFor="s-type" className={label}>Property type</label>
             <select id="s-type" name="type" className={select} defaultValue="">
