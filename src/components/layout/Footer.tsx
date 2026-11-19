@@ -55,15 +55,24 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/10">
-        <div className="container-width flex flex-col gap-3 py-6 text-xs text-white/55 md:flex-row md:justify-between">
-          <p>© 2026 {SITE.name}. All rights reserved.</p>
-          {SITE.sampleData && (
-            <p className="max-w-xl">
-              Builders, projects, prices, testimonials and contact details on this site are sample placeholders and
-              are not real offers. Replace them before launch.
-            </p>
-          )}
+        <div className="border-t border-white/10">
+        <div className="container-width flex flex-col gap-3 py-6 text-xs text-white/55 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-1">
+            <p>© 2026 {SITE.name}. All rights reserved.</p>
+            {process.env.NEXT_PUBLIC_RERA_NUMBER && (
+              <p>Haryana RERA registration no.: {process.env.NEXT_PUBLIC_RERA_NUMBER}</p>
+            )}
+            {SITE.sampleData && (
+              <p className="max-w-xl">
+                Builders, projects, prices, testimonials and contact details on this site are sample placeholders and
+                are not real offers. Replace them before launch.
+              </p>
+            )}
+          </div>
+          <ul className="flex flex-wrap gap-x-6 gap-y-2">
+            <li><Link href="/privacy-policy" className="hover:text-gold">Privacy Policy</Link></li>
+            <li><Link href="/terms" className="hover:text-gold">Terms of Use</Link></li>
+          </ul>
         </div>
       </div>
     </footer>

@@ -3,7 +3,7 @@ import { SITE } from "@/data/site";
 import { builders, insights, locations, projects } from "@/lib/data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const fixed = ["", "/about", "/services", "/contact", "/projects", "/projects/commercial", "/projects/residential", "/projects/pre-rented", "/builders", "/locations", "/insights"];
+  const fixed = ["", "/privacy-policy", "/terms", "/about", "/services", "/contact", "/projects", "/projects/commercial", "/projects/residential", "/projects/pre-rented", "/builders", "/locations", "/insights"];
   const dynamic = [
     ...builders.map((b) => `/builders/${b.slug}`),
     ...projects.map((p) => `/projects/${p.slug}`),

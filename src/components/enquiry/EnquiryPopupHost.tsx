@@ -65,7 +65,7 @@ export default function EnquiryPopupHost() {
 
   // Automatic trigger.
   useEffect(() => {
-    if (pathname.startsWith("/contact")) return;
+    if (["/contact", "/privacy-policy", "/terms"].some((p) => pathname.startsWith(p))) return;
     if (Date.now() < store.get()) return;
     const start = Date.now();
     let fired = false;

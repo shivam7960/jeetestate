@@ -78,10 +78,10 @@ const make = (
   overview,
   amenities: amenitiesFor(slug, category, propertyType),
   specifications: [
-    { label: "Sector / location", value: sector },
-    ...specs,
-    { label: "RERA and possession", value: "To be verified" },
-  ],
+  { label: "Sector / location", value: sector },
+  ...specs,
+  { label: "RERA and possession", value: "To be verified" },
+].filter((s) => !s.value.toLowerCase().startsWith("to be")),
   gallery: gallery(slug, name),
   ...(featured ? { featured: true } : {}),
 });
